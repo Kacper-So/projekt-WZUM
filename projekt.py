@@ -9,7 +9,6 @@ import numpy as np
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 import matplotlib.pyplot as plt
-from mlxtend.evaluate import confusion_matrix
 
 dataset = []
 with open('dataset.csv', 'r') as f:
@@ -31,6 +30,7 @@ finger_2 = []
 finger_3 = []
 finger_4 = []
 finger_5 = []
+hand_orientation = []
 
 for i in range(0, len(X)):
     for finger in fingers:
@@ -104,9 +104,15 @@ for i in range(0, len(X)):
 
         th_high = 0.9
         th_low = 0.6
+    
+    if float(X['landmark_0.y'][i]) < 1.2 * float(X['landmark_13.y'][i]) and float(X['landmark_0.y'][i]) > 0.8 * float(X['landmark_13.y'][i]):
+        hand_orientation.append('horizontal')
+    else:
+        hand_orientation.append('vertical')
+
        
 
-X = pd.DataFrame({'1': finger_1, '2': finger_2, '3': finger_3, '4': finger_4, '5': finger_5, 'letter': X['letter']})
+X = pd.DataFrame({'1': finger_1, '2': finger_2, '3': finger_3, '4': finger_4, '5': finger_5, 'hand_orientation': hand_orientation, 'letter': X['letter']})
 
 X.to_csv('xd.csv')
 
@@ -123,12 +129,14 @@ X_train['2'] = le.fit_transform(X_train['2'])
 X_train['3'] = le.fit_transform(X_train['3'])
 X_train['4'] = le.fit_transform(X_train['4'])
 X_train['5'] = le.fit_transform(X_train['5'])
+X_train['hand_orientation'] = le.fit_transform(X_train['hand_orientation'])
 
 X_test['1'] = le.fit_transform(X_test['1'])
 X_test['2'] = le.fit_transform(X_test['2'])
 X_test['3'] = le.fit_transform(X_test['3'])
 X_test['4'] = le.fit_transform(X_test['4'])
 X_test['5'] = le.fit_transform(X_test['5'])
+X_test['hand_orientation'] = le.fit_transform(X_test['hand_orientation'])
 
 model = RandomForestClassifier(n_estimators=100, random_state=24)
 
