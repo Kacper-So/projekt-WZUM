@@ -8,6 +8,7 @@ from PIL import Image, ImageTk
 import pandas as pd
 import cv2
 import mediapipe as mp
+import os
 
 # MediaPipe config
 mp_drawing = mp.solutions.drawing_utils
@@ -92,6 +93,20 @@ def backup_data():
             'Error: No DataFrame loaded! Create new file or load an existing one!'
         )
 
+# Utwórz listę na pliki zdjęć
+zdjecia = []
+
+# Przejdź przez wszystkie pliki w katalogu ./data
+for plik in os.listdir('./data'):
+    # Sprawdź, czy plik ma rozszerzenie zdjęcia
+    if plik.endswith(('.jpg', '.jpeg', '.png')):
+        # Wczytaj plik jako obraz za pomocą OpenCV
+        sciezka = os.path.join('./data', plik)
+        zdjecie = cv2.imread(sciezka)
+        # Dodaj obraz do listy zdjęć
+        zdjecia.append(zdjecie)
+
+print(zdjecia)
 
 def main():
     # Create an instance of TKinter Window or frame
