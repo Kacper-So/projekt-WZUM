@@ -9,6 +9,7 @@ import numpy as np
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 import matplotlib.pyplot as plt
+from sklearn import svm
 
 dataset = []
 with open('dataset.csv', 'r') as f:
@@ -37,6 +38,13 @@ finger_4_orientation = []
 finger_5_orientation = []
 
 for i in range(0, len(X)):
+
+    if float(X['landmark_0.y'][i]) < 1.2 * float(X['landmark_13.y'][i]) and float(X['landmark_0.y'][i]) > 0.8 * float(X['landmark_13.y'][i]):
+        hand_orientation.append('horizontal')
+    else:
+        hand_orientation.append('vertical')
+
+
     for finger in fingers:
         if finger == '1':
             if float(X['landmark_4.x'][i]) > float(X['landmark_17.x'][i]): #kciuk z lewej
@@ -69,12 +77,12 @@ for i in range(0, len(X)):
                 finger_2.append('bent')
             else:
                 finger_2.append('closed')
+                
 
-            if float(X['landmark_5.y'][i]) > float(X['landmark_8.y'][i]):
+            if float(X['landmark_5.y'][i]) < float(X['landmark_8.y'][i]):
                 finger_2_orientation.append('down')
             else:
                 finger_2_orientation.append('up')
-
 
         elif finger == '3':
             ref_dist = math.sqrt(pow(float(X['world_landmark_9.x'][i]) - float(X['world_landmark_0.x'][i]), 2) + pow(float(X['world_landmark_9.y'][i]) - float(X['world_landmark_0.y'][i]), 2) + pow(float(X['world_landmark_9.z'][i]) - float(X['world_landmark_0.z'][i]), 2))
@@ -88,10 +96,11 @@ for i in range(0, len(X)):
             else:
                 finger_3.append('closed')
 
-            if float(X['landmark_9.y'][i]) > float(X['landmark_12.y'][i]):
+            if float(X['landmark_9.y'][i]) < float(X['landmark_12.y'][i]):
                 finger_3_orientation.append('down')
             else:
                 finger_3_orientation.append('up')
+
 
         elif finger == '4':
             ref_dist = math.sqrt(pow(float(X['world_landmark_13.x'][i]) - float(X['world_landmark_0.x'][i]), 2) + pow(float(X['world_landmark_13.y'][i]) - float(X['world_landmark_0.y'][i]), 2) + pow(float(X['world_landmark_13.z'][i]) - float(X['world_landmark_0.z'][i]), 2))
@@ -105,7 +114,7 @@ for i in range(0, len(X)):
             else:
                 finger_4.append('closed')
 
-            if float(X['landmark_13.y'][i]) > float(X['landmark_17.y'][i]):
+            if float(X['landmark_13.y'][i]) < float(X['landmark_16.y'][i]):
                 finger_4_orientation.append('down')
             else:
                 finger_4_orientation.append('up')
@@ -122,19 +131,11 @@ for i in range(0, len(X)):
             else:
                 finger_5.append('closed')
 
-            if float(X['landmark_17.y'][i]) > float(X['landmark_20.y'][i]):
+
+            if float(X['landmark_17.y'][i]) < float(X['landmark_20.y'][i]):
                 finger_5_orientation.append('down')
             else:
                 finger_5_orientation.append('up')
-
-        th_high = 0.9
-        th_low = 0.6
-    
-    if float(X['landmark_0.y'][i]) < 1.2 * float(X['landmark_13.y'][i]) and float(X['landmark_0.y'][i]) > 0.8 * float(X['landmark_13.y'][i]):
-        hand_orientation.append('horizontal')
-    else:
-        hand_orientation.append('vertical')
-
        
 
 X = pd.DataFrame({'1': finger_1, '2': finger_2, '3': finger_3, '4': finger_4, '5': finger_5, 'finger_2_orientation': finger_2_orientation, 'finger_3_orientation': finger_3_orientation, 'finger_4_orientation': finger_4_orientation, 'finger_5_orientation': finger_5_orientation, 'hand_orientation': hand_orientation, 'letter': X['letter']})
@@ -171,10 +172,13 @@ X_test['finger_4_orientation'] = le.fit_transform(X_test['finger_4_orientation']
 X_test['finger_5_orientation'] = le.fit_transform(X_test['finger_5_orientation'])
 X_test['hand_orientation'] = le.fit_transform(X_test['hand_orientation'])
 
-model = RandomForestClassifier(n_estimators=100, random_state=24)
+# model = RandomForestClassifier(n_estimators=100, random_state=24)
+clf = svm.SVC(kernel='linear')
+clf.fit(X_train, Y_train)
+pred = clf.predict(X_test)
 
-model.fit(X_train, Y_train)
-pred = model.predict(X_test)
+# model.fit(X_train, Y_train)
+# pred = model.predict(X_test)
 
 accuracy = accuracy_score(Y_test, pred)
 print(accuracy)
