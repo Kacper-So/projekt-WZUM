@@ -24,7 +24,7 @@ class_dict = {}
 with open('.\data\_annotations.csv') as plik:
     czytnik = csv.reader(plik)
     for wiersz in czytnik:
-        class_dict[wiersz[0]] = wiersz[3]
+        class_dict[wiersz[0]] = wiersz[3].lower()
 
 # MediaPipe config
 mp_drawing = mp.solutions.drawing_utils
