@@ -31,6 +31,10 @@ finger_3 = []
 finger_4 = []
 finger_5 = []
 hand_orientation = []
+finger_2_orientation = []
+finger_3_orientation = []
+finger_4_orientation = []
+finger_5_orientation = []
 
 for i in range(0, len(X)):
     for finger in fingers:
@@ -66,6 +70,12 @@ for i in range(0, len(X)):
             else:
                 finger_2.append('closed')
 
+            if float(X['landmark_5.y'][i]) > float(X['landmark_8.y'][i]):
+                finger_2_orientation.append('down')
+            else:
+                finger_2_orientation.append('up')
+
+
         elif finger == '3':
             ref_dist = math.sqrt(pow(float(X['world_landmark_9.x'][i]) - float(X['world_landmark_0.x'][i]), 2) + pow(float(X['world_landmark_9.y'][i]) - float(X['world_landmark_0.y'][i]), 2) + pow(float(X['world_landmark_9.z'][i]) - float(X['world_landmark_0.z'][i]), 2))
             finger_tip_dist = math.sqrt(pow(float(X['world_landmark_12.x'][i]) - float(X['world_landmark_0.x'][i]), 2) + pow(float(X['world_landmark_12.y'][i]) - float(X['world_landmark_0.y'][i]), 2) + pow(float(X['world_landmark_12.z'][i]) - float(X['world_landmark_0.z'][i]), 2))
@@ -77,6 +87,11 @@ for i in range(0, len(X)):
                 finger_3.append('bent')
             else:
                 finger_3.append('closed')
+
+            if float(X['landmark_9.y'][i]) > float(X['landmark_12.y'][i]):
+                finger_3_orientation.append('down')
+            else:
+                finger_3_orientation.append('up')
 
         elif finger == '4':
             ref_dist = math.sqrt(pow(float(X['world_landmark_13.x'][i]) - float(X['world_landmark_0.x'][i]), 2) + pow(float(X['world_landmark_13.y'][i]) - float(X['world_landmark_0.y'][i]), 2) + pow(float(X['world_landmark_13.z'][i]) - float(X['world_landmark_0.z'][i]), 2))
@@ -90,6 +105,11 @@ for i in range(0, len(X)):
             else:
                 finger_4.append('closed')
 
+            if float(X['landmark_13.y'][i]) > float(X['landmark_17.y'][i]):
+                finger_4_orientation.append('down')
+            else:
+                finger_4_orientation.append('up')
+
         elif finger == '5':
             ref_dist = math.sqrt(pow(float(X['world_landmark_17.x'][i]) - float(X['world_landmark_0.x'][i]), 2) + pow(float(X['world_landmark_17.y'][i]) - float(X['world_landmark_0.y'][i]), 2) + pow(float(X['world_landmark_17.z'][i]) - float(X['world_landmark_0.z'][i]), 2))
             finger_tip_dist = math.sqrt(pow(float(X['world_landmark_20.x'][i]) - float(X['world_landmark_0.x'][i]), 2) + pow(float(X['world_landmark_20.y'][i]) - float(X['world_landmark_0.y'][i]), 2) + pow(float(X['world_landmark_20.z'][i]) - float(X['world_landmark_0.z'][i]), 2))
@@ -102,6 +122,11 @@ for i in range(0, len(X)):
             else:
                 finger_5.append('closed')
 
+            if float(X['landmark_17.y'][i]) > float(X['landmark_20.y'][i]):
+                finger_5_orientation.append('down')
+            else:
+                finger_5_orientation.append('up')
+
         th_high = 0.9
         th_low = 0.6
     
@@ -112,7 +137,7 @@ for i in range(0, len(X)):
 
        
 
-X = pd.DataFrame({'1': finger_1, '2': finger_2, '3': finger_3, '4': finger_4, '5': finger_5, 'hand_orientation': hand_orientation, 'letter': X['letter']})
+X = pd.DataFrame({'1': finger_1, '2': finger_2, '3': finger_3, '4': finger_4, '5': finger_5, 'finger_2_orientation': finger_2_orientation, 'finger_3_orientation': finger_3_orientation, 'finger_4_orientation': finger_4_orientation, 'finger_5_orientation': finger_5_orientation, 'hand_orientation': hand_orientation, 'letter': X['letter']})
 
 X.to_csv('xd.csv')
 
@@ -129,6 +154,10 @@ X_train['2'] = le.fit_transform(X_train['2'])
 X_train['3'] = le.fit_transform(X_train['3'])
 X_train['4'] = le.fit_transform(X_train['4'])
 X_train['5'] = le.fit_transform(X_train['5'])
+X_train['finger_2_orientation'] = le.fit_transform(X_train['finger_2_orientation'])
+X_train['finger_3_orientation'] = le.fit_transform(X_train['finger_3_orientation'])
+X_train['finger_4_orientation'] = le.fit_transform(X_train['finger_4_orientation'])
+X_train['finger_5_orientation'] = le.fit_transform(X_train['finger_5_orientation'])
 X_train['hand_orientation'] = le.fit_transform(X_train['hand_orientation'])
 
 X_test['1'] = le.fit_transform(X_test['1'])
@@ -136,6 +165,10 @@ X_test['2'] = le.fit_transform(X_test['2'])
 X_test['3'] = le.fit_transform(X_test['3'])
 X_test['4'] = le.fit_transform(X_test['4'])
 X_test['5'] = le.fit_transform(X_test['5'])
+X_test['finger_2_orientation'] = le.fit_transform(X_test['finger_2_orientation'])
+X_test['finger_3_orientation'] = le.fit_transform(X_test['finger_3_orientation'])
+X_test['finger_4_orientation'] = le.fit_transform(X_test['finger_4_orientation'])
+X_test['finger_5_orientation'] = le.fit_transform(X_test['finger_5_orientation'])
 X_test['hand_orientation'] = le.fit_transform(X_test['hand_orientation'])
 
 model = RandomForestClassifier(n_estimators=100, random_state=24)
